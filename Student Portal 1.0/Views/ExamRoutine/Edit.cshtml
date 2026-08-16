@@ -1,0 +1,153 @@
+﻿@model Student_Portal_1._0.Models.ExamRoutine
+
+@{
+    ViewData["Title"] = "Edit Exam Schedule";
+}
+
+<style>
+    .ios-glass-card,
+    .ios-glass-card *,
+    .ios-glass-card .text-muted,
+    .ios-glass-card .opacity-75 {
+        color: #ffffff !important;
+    }
+
+    .ios-glass-input::placeholder {
+        color: rgba(255, 255, 255, 0.7) !important;
+        opacity: 1;
+    }
+
+    .ios-glass-card {
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(25px) saturate(180%);
+        -webkit-backdrop-filter: blur(25px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 2rem;
+        box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+    }
+
+    .ios-glass-header {
+        background: rgba(255, 255, 255, 0.06);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 1.25rem 2rem;
+    }
+
+    .ios-glass-input, .ios-glass-select {
+        background: rgba(255, 255, 255, 0.08) !important;
+        border: 1px solid rgba(255, 255, 255, 0.18) !important;
+        color: #ffffff !important;
+        border-radius: 1rem !important;
+        padding: 0.85rem 1.1rem !important;
+    }
+
+        .ios-glass-select option {
+            background-color: #1e293b;
+            color: #ffffff;
+        }
+
+    .ios-glass-label {
+        font-weight: 500;
+        margin-bottom: 0.4rem;
+        color: #ffffff !important;
+        font-size: 0.875rem;
+    }
+
+    .btn-ios-primary {
+        background: linear-gradient(135deg, rgba(56, 189, 248, 0.85), rgba(37, 99, 235, 0.85));
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        font-weight: 600;
+        border-radius: 1rem;
+        padding: 0.85rem 1.5rem;
+    }
+
+    .btn-ios-secondary {
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 1rem;
+        padding: 0.85rem 1.5rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .btn-ios-secondary:hover {
+            background: rgba(255, 255, 255, 0.18);
+            color: #ffffff !important;
+        }
+</style>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="ios-glass-card">
+                <div class="ios-glass-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="fw-bold mb-0 text-white">Edit Exam Schedule</h3>
+                        <p class="text-white small mb-0">Update date, timing, and room allocation</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a asp-controller="Home" asp-action="Index" class="btn-ios-secondary btn-sm px-3 rounded-pill">Home</a>
+                        <a asp-action="Index" class="btn-ios-secondary btn-sm px-3 rounded-pill">Cancel</a>
+                    </div>
+                </div>
+
+                <div class="p-4 p-md-5">
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-12">
+                                <label asp-for="CourseScheduleId" class="ios-glass-label">Course & Section</label>
+                                <select asp-for="CourseScheduleId" asp-items="(SelectList)ViewBag.Courses" class="form-select ios-glass-select" required>
+                                    <option value="">-- Select Course & Section --</option>
+                                </select>
+                                <span asp-validation-for="CourseScheduleId" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label asp-for="ExamDate" class="ios-glass-label">Exam Date</label>
+                                <input asp-for="ExamDate" type="date" class="form-control ios-glass-input" required />
+                                <span asp-validation-for="ExamDate" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="StartTime" class="ios-glass-label">Start Time</label>
+                                <input asp-for="StartTime" type="time" class="form-control ios-glass-input" required />
+                                <span asp-validation-for="StartTime" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="EndTime" class="ios-glass-label">End Time</label>
+                                <input asp-for="EndTime" type="time" class="form-control ios-glass-input" required />
+                                <span asp-validation-for="EndTime" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label asp-for="RoomNo" class="ios-glass-label">Room Number</label>
+                                <input asp-for="RoomNo" class="form-control ios-glass-input" required />
+                                <span asp-validation-for="RoomNo" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center pt-3 border-top border-white border-opacity-10">
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-ios-secondary">Home</a>
+                            <div class="d-flex gap-2">
+                                <a asp-action="Index" class="btn btn-ios-secondary">Cancel</a>
+                                <button type="submit" class="btn btn-ios-primary">Save Changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

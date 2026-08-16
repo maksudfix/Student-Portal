@@ -1,0 +1,179 @@
+﻿@model Student_Portal_1._0.Models.Course
+
+@{
+    ViewData["Title"] = "Create Course";
+}
+
+<style>
+    /* Force ALL text inside the card to be white */
+    .ios-glass-card,
+    .ios-glass-card * {
+        color: #ffffff !important;
+    }
+
+    .ios-glass-card {
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(25px) saturate(180%);
+        -webkit-backdrop-filter: blur(25px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 2rem;
+        box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+    }
+
+    .ios-glass-header {
+        background: rgba(255, 255, 255, 0.06);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 1.25rem 2rem;
+    }
+
+    .ios-section-title {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: #ffffff !important;
+        font-weight: 700;
+        margin-bottom: 1.25rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .ios-glass-input, .ios-glass-select {
+        background: rgba(255, 255, 255, 0.08) !important;
+        border: 1px solid rgba(255, 255, 255, 0.18) !important;
+        color: #ffffff !important;
+        border-radius: 1rem !important;
+        padding: 0.85rem 1.1rem !important;
+    }
+
+        .ios-glass-input::placeholder {
+            color: rgba(255, 255, 255, 0.6) !important;
+        }
+
+        .ios-glass-select option {
+            background-color: #1e293b;
+            color: #ffffff !important;
+        }
+
+    .ios-glass-label {
+        font-weight: 500;
+        margin-bottom: 0.4rem;
+        color: #ffffff !important;
+        font-size: 0.875rem;
+    }
+
+    /* iOS Top Right Back Button Style */
+    .ios-top-back-btn {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        color: #ffffff !important;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        font-weight: 500;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+        .ios-top-back-btn:hover {
+            background: rgba(255, 255, 255, 0.2) !important;
+            color: #ffffff !important;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+        }
+
+    .btn-ios-primary, .btn-ios-secondary {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        line-height: 1 !important;
+        text-decoration: none;
+        transition: all 0.25s ease;
+    }
+
+    .btn-ios-primary {
+        background: linear-gradient(135deg, rgba(56, 189, 248, 0.85), rgba(37, 99, 235, 0.85));
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        font-weight: 600;
+        border-radius: 1rem;
+        padding: 0.85rem 1.5rem;
+    }
+
+        .btn-ios-primary:hover {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 1), rgba(37, 99, 235, 1));
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+        }
+
+    .btn-ios-secondary {
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 1rem;
+        padding: 0.85rem 1.5rem;
+    }
+
+        .btn-ios-secondary:hover {
+            background: rgba(255, 255, 255, 0.18);
+            color: #ffffff !important;
+        }
+</style>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="ios-glass-card p-4 p-md-5 position-relative">
+
+                <!-- iOS Style Top Header & Right-Aligned Back Button -->
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h3 class="fw-bold text-white mb-1">Create Course</h3>
+                        <p class="text-white-50 mb-0">Add a new course to the portal system.</p>
+                    </div>
+                    <a asp-action="Index" class="ios-top-back-btn px-3 py-1 rounded-pill d-inline-flex align-items-center">
+                        ‹ Back
+                    </a>
+                </div>
+
+                <form asp-action="Create" method="post" autocomplete="off" class="mt-4">
+                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="CourseCode" class="form-label text-white">Course Code</label>
+                        <input asp-for="CourseCode" class="form-control ios-glass-input" required placeholder="e.g. CSE-101" />
+                        <span asp-validation-for="CourseCode" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label text-white">Course Title</label>
+                        <input asp-for="Title" class="form-control ios-glass-input" required placeholder="e.g. Introduction to Programming" />
+                        <span asp-validation-for="Title" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="Credits" class="form-label text-white">Credits</label>
+                            <input asp-for="Credits" type="number" step="0.5" class="form-control ios-glass-input" required placeholder="e.g. 3" />
+                            <span asp-validation-for="Credits" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Department" class="form-label text-white">Department</label>
+                            <input asp-for="Department" class="form-control ios-glass-input" required placeholder="e.g. CSE" />
+                            <span asp-validation-for="Department" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-center gap-3">
+                        <a asp-action="Index" class="btn btn-ios-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-ios-primary">Create Course</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

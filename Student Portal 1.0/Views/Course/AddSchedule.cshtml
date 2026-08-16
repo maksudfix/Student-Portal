@@ -1,0 +1,180 @@
+﻿@model Student_Portal_1._0.Models.CourseSchedule
+
+@{
+    ViewData["Title"] = "Add Class Schedule";
+    var course = ViewBag.Course as Student_Portal_1._0.Models.Course;
+}
+
+<!-- Glassmorphism Custom Styles -->
+<style>
+    /* Frosted Glass Effect Card */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        color: #ffffff !important;
+    }
+
+        /* Force all form labels to white */
+        .glass-card label,
+        .glass-card h3,
+        .glass-card p,
+        .glass-card span {
+            color: #ffffff !important;
+        }
+
+    /* iOS Style Transparent Inputs & Selects */
+    .glass-input {
+        background: rgba(255, 255, 255, 0.08) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        color: #ffffff !important;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+    }
+
+        .glass-input:focus {
+            background: rgba(255, 255, 255, 0.15) !important;
+            border-color: rgba(255, 255, 255, 0.4) !important;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.2) !important;
+            color: #ffffff !important;
+        }
+
+        /* Input Placeholders Styling */
+        .glass-input::placeholder {
+            color: rgba(255, 255, 255, 0.6) !important;
+        }
+
+        /* Translucent Glass Styling for Dropdown Options */
+        .glass-input option {
+            background-color: rgba(30, 30, 30, 0.85) !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: #ffffff !important;
+        }
+
+    /* iOS Glass Accent Button */
+    .btn-glass-primary {
+        background: rgba(10, 132, 255, 0.8); /* iOS System Blue */
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        color: #ffffff !important;
+        transition: all 0.2s ease;
+    }
+
+        .btn-glass-primary:hover {
+            background: rgba(10, 132, 255, 1);
+            color: #ffffff !important;
+            box-shadow: 0 0 15px rgba(10, 132, 255, 0.5);
+        }
+
+    /* iOS Top Right Back Button Style */
+    .ios-top-back-btn {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        color: #ffffff !important;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        font-weight: 500;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+        .ios-top-back-btn:hover {
+            background: rgba(255, 255, 255, 0.2) !important;
+            color: #ffffff !important;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+        }
+
+    /* Remove Number Input Increment/Decrement Spinners */
+    .no-spinners::-webkit-outer-spin-button,
+    .no-spinners::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .no-spinners[type=number] {
+        -moz-appearance: textfield; /* Firefox */
+    }
+</style>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <!-- Glass Card Container -->
+            <div class="glass-card p-4 rounded-4 position-relative">
+
+                <!-- iOS Style Top Header & Right-Aligned Back Button -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="fw-bold m-0">Add Class Slot</h3>
+                    <a asp-action="Index" class="ios-top-back-btn px-3 py-1 rounded-pill d-inline-flex align-items-center">
+                        ‹ Back
+                    </a>
+                </div>
+
+                @if (course != null)
+                {
+                    <p class="mb-4 opacity-75">Course: <strong>@course.CourseCode - @course.Title</strong></p>
+                }
+
+                <form asp-action="AddSchedule" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="CourseId" />
+
+                    <!-- Added Section Input Field -->
+                    <div class="mb-3">
+                        <label asp-for="Section" class="form-label">Section</label>
+                        <input asp-for="Section" class="form-control glass-input" placeholder="e.g. Section A" required />
+                        <span asp-validation-for="Section" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="DayOfWeek" class="form-label">Day of Week</label>
+                        <select asp-for="DayOfWeek" class="form-select glass-input" asp-items="Html.GetEnumSelectList<DayOfWeek>()">
+                            <option value="" disabled selected>-- Select Day of Week --</option>
+                        </select>
+                        <span asp-validation-for="DayOfWeek" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label asp-for="StartTime" class="form-label">Start Time</label>
+                            <input asp-for="StartTime" type="time" class="form-control glass-input" required />
+                            <span asp-validation-for="StartTime" class="text-danger small"></span>
+                        </div>
+                        <div class="col-6">
+                            <label asp-for="EndTime" class="form-label">End Time</label>
+                            <input asp-for="EndTime" type="time" class="form-control glass-input" required />
+                            <span asp-validation-for="EndTime" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="RoomNo" class="form-label">Room Number</label>
+                        <input asp-for="RoomNo" class="form-control glass-input" placeholder="e.g. Room 301" />
+                        <span asp-validation-for="RoomNo" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Capacity" class="form-label">Student Capacity</label>
+                        <input asp-for="Capacity" type="number" class="form-control glass-input no-spinners" min="1" placeholder="e.g. 30" />
+                        <span asp-validation-for="Capacity" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Center Aligned Action Buttons -->
+                    <div class="d-flex justify-content-center gap-3 mt-4">
+                        <a asp-action="Index" class="btn btn-outline-light rounded-3 px-4">Cancel</a>
+                        <button type="submit" class="btn btn-glass-primary rounded-3 px-4 fw-semibold">Add Slot</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

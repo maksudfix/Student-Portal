@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Access Denied";
+}
+
+<style>
+    .access-denied-container,
+    .access-denied-container * {
+        color: #ffffff !important;
+    }
+
+    .ios-glass-card {
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(25px) saturate(180%);
+        -webkit-backdrop-filter: blur(25px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 2rem;
+        box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.15);
+    }
+</style>
+
+<div class="container my-5 access-denied-container d-flex justify-content-center">
+    <div class="ios-glass-card p-5 text-center col-md-8 col-lg-6 my-5">
+        <div class="display-1 text-danger fw-bold mb-3">🚫</div>
+        <h2 class="fw-bold text-white mb-3">Access Denied</h2>
+        <p class="text-white opacity-75 mb-4">
+            You do not have permission to access this resource. This area is restricted to administrators only.
+        </p>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-light rounded-pill px-4 fw-bold">
+            Back to Home
+        </a>
+    </div>
+</div>

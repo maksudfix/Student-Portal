@@ -1,0 +1,247 @@
+﻿@model IEnumerable<Student_Portal_1._0.Models.StudentInfo>
+
+@{
+    ViewData["Title"] = "All Students List";
+}
+
+<style>
+    /* iOS Glassmorphism Container */
+    .ios-glass-card {
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(25px) saturate(180%);
+        -webkit-backdrop-filter: blur(25px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 2rem;
+        box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.15), inset 0 1px 1px 0 rgba(255, 255, 255, 0.3);
+        overflow: hidden;
+    }
+
+    .ios-glass-header {
+        background: rgba(255, 255, 255, 0.06);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 1.25rem 2rem;
+    }
+
+    /* iOS Glass Table Styling */
+    .ios-glass-table {
+        color: #ffffff !important;
+        margin-bottom: 0;
+    }
+
+        .ios-glass-table thead tr {
+            background: rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .ios-glass-table th {
+            color: #38bdf8 !important;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            padding: 1rem 1.25rem;
+            border: none;
+        }
+
+        .ios-glass-table tbody tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+            .ios-glass-table tbody tr:hover {
+                background: rgba(255, 255, 255, 0.1) !important;
+            }
+
+        .ios-glass-table td {
+            padding: 1rem 1.25rem;
+            border: none;
+            color: #ffffff !important;
+        }
+
+    /* Avatar Glow */
+    .avatar-ios-glow {
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 12px rgba(56, 189, 248, 0.25);
+    }
+
+    /* iOS Glass Buttons */
+    .btn-ios-primary {
+        background: linear-gradient(135deg, rgba(56, 189, 248, 0.85), rgba(37, 99, 235, 0.85));
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        font-weight: 600;
+        border-radius: 1rem;
+        padding: 0.5rem 1.2rem;
+        transition: all 0.25s ease;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    }
+
+        .btn-ios-primary:hover {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 1), rgba(37, 99, 235, 1));
+            color: #ffffff !important;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+        }
+
+    .btn-ios-secondary {
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        font-weight: 500;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+        .btn-ios-secondary:hover {
+            background: rgba(255, 255, 255, 0.18);
+            color: #ffffff !important;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+    .btn-ios-warning {
+        background: rgba(245, 158, 11, 0.2);
+        color: #fbbf24 !important;
+        border: 1px solid rgba(245, 158, 11, 0.4);
+        backdrop-filter: blur(10px);
+        transition: all 0.25s ease;
+    }
+
+        .btn-ios-warning:hover {
+            background: rgba(245, 158, 11, 0.4);
+            color: #ffffff !important;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+
+    .btn-ios-danger {
+        background: rgba(239, 68, 68, 0.2);
+        color: #fca5a5 !important;
+        border: 1px solid rgba(239, 68, 68, 0.4);
+        backdrop-filter: blur(10px);
+        transition: all 0.25s ease;
+    }
+
+        .btn-ios-danger:hover {
+            background: rgba(239, 68, 68, 0.4);
+            color: #ffffff !important;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+    .ios-glass-badge {
+        background: rgba(56, 189, 248, 0.15);
+        color: #ffffff !important;
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        backdrop-filter: blur(10px);
+        font-weight: 500;
+    }
+</style>
+
+<div class="container my-5">
+    <div class="ios-glass-card">
+
+        <!-- Header -->
+        <div class="ios-glass-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <h3 class="fw-bold mb-0 text-white" style="letter-spacing: -0.02em;">Student Directory</h3>
+                <p class="text-white opacity-75 small mb-0">Admin view & management panel</p>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+                <a asp-controller="Student" asp-action="Create" class="btn btn-ios-primary btn-sm rounded-pill d-flex align-items-center gap-1 px-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                    </svg>
+                    Add New Student
+                </a>
+
+                <!-- Back to Home Button -->
+                <a asp-controller="Home" asp-action="Index" class="btn btn-ios-secondary btn-sm px-3 rounded-pill text-white">
+                    Back to Home
+                </a>
+            </div>
+        </div>
+
+        <!-- Table Body -->
+        <div class="table-responsive">
+            <table class="table ios-glass-table align-middle">
+                <thead>
+                    <tr>
+                        <th>Photo</th>
+                        <th>Student ID</th>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center text-white opacity-75 py-5">
+                                <div class="py-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-folder-x opacity-50 mb-2" viewBox="0 0 16 16">
+                                        <path d="M.5 3l.04.87a1.99 1.99 0 0 0-.342 1.311l.637 7A2 2 0 0 0 2.826 14H13.174a2 2 0 0 0 1.991-1.819l.637-7A1.99 1.99 0 0 0 15.46 3.87L15.5 3H.5zm1 1h13l-.04.87a.99.99 0 0 1-.171.656l-.637 7A1 1 0 0 1 13.174 13H2.826a1 1 0 0 1-.991-.91l-.637-7a.99.99 0 0 1-.171-.656L1.5 4z" />
+                                        <path d="M11.854 6.146a.5.5 0 0 0-.708 0L9 8.293 6.854 6.146a.5.5 0 1 0-.708.708L8.293 9l-2.147 2.146a.5.5 0 0 0 .708.708L9 9.707l2.146 2.147a.5.5 0 0 0 .708-.708L9.707 9l2.147-2.146a.5.5 0 0 0 0-.708z" />
+                                    </svg>
+                                    <p class="mb-0 text-white">No student records found in the directory.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var student in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <img src="@(string.IsNullOrEmpty(student.Image) ? "/images/default-avatar.png" : student.Image)"
+                                         alt="Avatar"
+                                         class="rounded-circle avatar-ios-glow"
+                                         style="width: 42px; height: 42px; object-fit: cover;" />
+                                </td>
+                                <td class="text-white fw-semibold">
+                                    @student.StudentId
+                                </td>
+                                <td class="text-white fw-bold">
+                                    @student.Name
+                                </td>
+                                <td>
+                                    <span class="badge ios-glass-badge rounded-pill px-3 py-1">
+                                        @student.Department
+                                    </span>
+                                </td>
+                                <td class="text-white">@student.Email</td>
+                                <td class="text-white">@student.Phone</td>
+                                <td class="text-end">
+                                    <div class="d-inline-flex gap-2">
+                                        <!-- EDIT BUTTON (ADMIN) -->
+                                        <a asp-controller="Student"
+                                           asp-action="Edit"
+                                           asp-route-id="@student.Id"
+                                           class="btn btn-ios-warning btn-sm px-3 rounded-pill">
+                                            Edit
+                                        </a>
+
+                                        <!-- DELETE BUTTON (ADMIN) -->
+                                        <a asp-controller="Student"
+                                           asp-action="Delete"
+                                           asp-route-id="@student.Id"
+                                           class="btn btn-ios-danger btn-sm px-3 rounded-pill">
+                                            Delete
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>

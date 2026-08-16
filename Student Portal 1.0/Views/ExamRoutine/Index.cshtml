@@ -1,0 +1,246 @@
+﻿@model Student_Portal_1._0.Models.ViewModels.ExamRoutineViewModel
+
+@{
+    ViewData["Title"] = "Exam Routine";
+}
+
+<style>
+    /* Force pure white text across all card and table contents */
+    .ios-glass-card,
+    .ios-glass-card *,
+    .card,
+    .card *,
+    .ios-glass-card .text-muted,
+    .ios-glass-card .opacity-75,
+    .ios-glass-card .opacity-50,
+    .ios-glass-card table,
+    .ios-glass-card th,
+    .ios-glass-card td,
+    .ios-glass-card .text-info {
+        color: #ffffff !important;
+    }
+
+    .ios-glass-card {
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(25px) saturate(180%);
+        -webkit-backdrop-filter: blur(25px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 2rem;
+        box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+    }
+
+    .ios-glass-header {
+        background: rgba(255, 255, 255, 0.06);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 1.25rem 2rem;
+    }
+
+    /* Transparent Table Styling to match glass vibe */
+    .ios-glass-table {
+        background: transparent !important;
+    }
+
+        .ios-glass-table th,
+        .ios-glass-table td {
+            background-color: transparent !important;
+            color: #ffffff !important;
+            border-color: rgba(255, 255, 255, 0.12) !important;
+        }
+
+    /* Remove Bootstrap hover states that cause white flashes */
+    .table-hover > tbody > tr:hover > * {
+        background-color: rgba(255, 255, 255, 0.06) !important;
+        color: #ffffff !important;
+    }
+
+    .btn-ios-primary {
+        background: linear-gradient(135deg, rgba(56, 189, 248, 0.85), rgba(37, 99, 235, 0.85));
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        font-weight: 600;
+        border-radius: 1rem;
+        padding: 0.6rem 1.25rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+        .btn-ios-primary:hover {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 1), rgba(37, 99, 235, 1));
+            color: #ffffff !important;
+        }
+
+    .btn-ios-secondary {
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 1rem;
+        padding: 0.6rem 1.25rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .btn-ios-secondary:hover {
+            background: rgba(255, 255, 255, 0.18);
+            color: #ffffff !important;
+        }
+
+    .btn-ios-warning {
+        background: rgba(245, 158, 11, 0.25);
+        color: #ffffff !important;
+        border: 1px solid rgba(245, 158, 11, 0.4);
+        border-radius: 0.75rem;
+        padding: 0.35rem 0.85rem;
+        text-decoration: none;
+    }
+
+        .btn-ios-warning:hover {
+            background: rgba(245, 158, 11, 0.45);
+            color: #ffffff !important;
+        }
+
+    .btn-ios-danger {
+        background: rgba(239, 68, 68, 0.25);
+        color: #ffffff !important;
+        border: 1px solid rgba(239, 68, 68, 0.4);
+        border-radius: 0.75rem;
+        padding: 0.35rem 0.85rem;
+    }
+
+        .btn-ios-danger:hover {
+            background: rgba(239, 68, 68, 0.45);
+            color: #ffffff !important;
+        }
+
+    /* Glass Modal styling */
+    .modal-content.ios-glass-card {
+        background: rgba(30, 41, 59, 0.85) !important;
+        backdrop-filter: blur(30px) saturate(200%);
+        -webkit-backdrop-filter: blur(30px) saturate(200%);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+</style>
+
+<div class="container my-5">
+    <!-- Header Card -->
+    <div class="ios-glass-card mb-4">
+        <div class="ios-glass-header d-flex justify-content-between align-items-center">
+            <div>
+                <h3 class="fw-bold mb-0 text-white">Exam Routine</h3>
+                <p class="text-white small mb-0">Schedule for enrolled courses</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a asp-controller="Home" asp-action="Index" class="btn-ios-secondary btn-sm px-3 rounded-pill">Home</a>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-action="Create" class="btn-ios-primary btn-sm px-3 rounded-pill">Publish Exam Date</a>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Card -->
+    <div class="ios-glass-card p-4">
+        <div class="table-responsive">
+            <table class="table ios-glass-table align-middle mb-0">
+                <thead>
+                    <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.2);">
+                        <th class="py-3 text-center">Date</th>
+                        <th class="py-3 text-center">Course</th>
+                        <th class="py-3 text-center">Section</th>
+                        <th class="py-3 text-center">Time Slot</th>
+                        <th class="py-3 text-center">Room</th>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <th class="py-3 text-center">Actions</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.ExamSchedules != null && Model.ExamSchedules.Any())
+                    {
+                        @foreach (var exam in Model.ExamSchedules)
+                        {
+                            <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+                                <td class="fw-bold py-3 text-center">@exam.FormattedDate</td>
+                                <td class="py-3 text-center">
+                                    <div class="fw-bold">@exam.CourseCode</div>
+                                    <div class="small" style="color: rgba(255, 255, 255, 0.8) !important;">@exam.CourseTitle</div>
+                                </td>
+                                <td class="py-3 text-center"> @exam.Section </td>
+                                <td class="py-3 text-center">@exam.TimeSlotFormatted</td>
+                                <td class="py-3 text-center">@exam.RoomNo</td>
+
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <td class="text-center py-3">
+                                        <div class="d-inline-flex gap-2">
+                                            <a asp-action="Edit" asp-route-id="@exam.ExamRoutineId" class="btn btn-sm btn-ios-warning">Edit</a>
+                                            <!-- Button that triggers custom glass modal -->
+                                            <button type="button" class="btn btn-sm btn-ios-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-exam-id="@exam.ExamRoutineId" data-exam-course="@exam.CourseCode (@exam.Section)">
+                                                Remove
+                                            </button>
+                                        </div>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="@(User.IsInRole("Admin") ? 6 : 5)" class="text-center py-5">
+                                No exams scheduled for your courses yet.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Glass Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content ios-glass-card shadow-lg">
+            <div class="modal-header border-bottom border-white border-opacity-15">
+                <h5 class="modal-title fw-bold text-white" id="deleteModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-4 text-white">
+                Are you sure you want to remove the exam schedule for <strong id="modalCourseName" class="text-info"></strong>? This action cannot be undone.
+            </div>
+            <div class="modal-footer border-top border-white border-opacity-15">
+                <button type="button" class="btn btn-ios-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-ios-danger rounded-pill px-4">Yes, Remove</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // JavaScript to dynamically pass the Exam ID and Course name into the modal form
+        const deleteModal = document.getElementById('deleteModal');
+        if (deleteModal) {
+            deleteModal.addEventListener('show.bs.modal', event => {
+                const button = event.relatedTarget;
+                const examId = button.getAttribute('data-exam-id');
+                const courseName = button.getAttribute('data-exam-course');
+
+                const modalCourseSpan = deleteModal.querySelector('#modalCourseName');
+                const deleteForm = deleteModal.querySelector('#deleteForm');
+
+                modalCourseSpan.textContent = courseName;
+                deleteForm.action = '@Url.Action("Delete", "ExamRoutine")/' + examId;
+            });
+        }
+    </script>
+}

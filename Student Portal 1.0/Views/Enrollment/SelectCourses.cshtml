@@ -1,0 +1,213 @@
+﻿@model Student_Portal_1._0.Models.ViewModels.CourseSelectionViewModel
+
+@{
+    ViewData["Title"] = "Course Selection";
+}
+
+<style>
+    /* Global text color override to guarantee pure white text across all elements */
+    .course-selection-container,
+    .course-selection-container * {
+        color: #ffffff !important;
+    }
+
+    .ios-glass-card {
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(25px) saturate(180%);
+        -webkit-backdrop-filter: blur(25px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 2rem;
+        box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+    }
+
+    .ios-glass-header {
+        background: rgba(255, 255, 255, 0.06);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 1.25rem 2rem;
+    }
+
+    .ios-section-title {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: #ffffff !important;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+    }
+
+    .ios-slot-item {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 1rem;
+        padding: 0.85rem 1.1rem;
+        margin-bottom: 0.6rem;
+        transition: all 0.25s ease;
+    }
+
+        .ios-slot-item:hover:not(.disabled-slot) {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .ios-slot-item.disabled-slot {
+            opacity: 0.6;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .ios-slot-item.already-enrolled {
+            border-color: rgba(52, 211, 153, 0.5);
+            background: rgba(16, 185, 129, 0.25);
+        }
+
+    .btn-ios-primary {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.15));
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        font-weight: 600;
+        border-radius: 1rem;
+        padding: 0.4rem 1.25rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .btn-ios-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.4);
+            color: #ffffff !important;
+        }
+
+    .badge-white-custom {
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #ffffff !important;
+    }
+
+    .glass-alert {
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border-radius: 1.25rem;
+    }
+</style>
+
+<div class="container my-5 course-selection-container">
+
+    <!-- Header Glass Card -->
+    <div class="ios-glass-card mb-4">
+        <div class="ios-glass-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <h3 class="fw-bold mb-1 text-white">Course Selection & Advising</h3>
+                <p class="text-white opacity-75 small mb-0">
+                    Student: <strong>@(Model.StudentName ?? User.Identity?.Name ?? "Student")</strong> | Credit Limits: <strong>8 - 18 Credits</strong>
+                </p>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-light rounded-pill px-4 btn-sm fw-bold">
+                    Home
+                </a>
+                <a asp-controller="Enrollment" asp-action="MyRoutine" class="btn btn-outline-light rounded-pill px-4 btn-sm fw-bold">
+                    My Routine
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Course Grid -->
+    <div class="row g-4">
+        @if (Model.Courses != null && Model.Courses.Any())
+        {
+            @foreach (var course in Model.Courses)
+            {
+                <div class="col-md-6">
+                    <div class="ios-glass-card p-4 h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <h5 class="text-white fw-bold mb-0">@course.CourseCode</h5>
+                                <div class="text-white opacity-75 small">@course.Title</div>
+                            </div>
+                            <span class="badge badge-white-custom rounded-pill px-3 py-2">@course.Credits Credits</span>
+                        </div>
+
+                        <div class="ios-section-title mt-3">Available Schedule Slots</div>
+
+                        @if (course.Schedules != null && course.Schedules.Any())
+                        {
+                            @foreach (var schedule in course.Schedules)
+                            {
+                                bool isEnrolled = Model.EnrolledScheduleIds?.Contains(schedule.Id) ?? false;
+                                int currentEnrolledCount = schedule.Enrollments?.Count ?? 0;
+                                bool isFull = currentEnrolledCount >= schedule.Capacity;
+                                bool isDisabled = isFull || isEnrolled;
+
+                                <div class="ios-slot-item d-flex align-items-center justify-content-between gap-3 w-100 @(isDisabled ? "disabled-slot" : "") @(isEnrolled ? "already-enrolled" : "")">
+                                    <div class="text-white small">
+                                        <div class="fw-bold text-white">
+                                            @schedule.DayOfWeek |
+                                            @DateTime.Today.Add(schedule.StartTime).ToString("hh:mm tt") - @DateTime.Today.Add(schedule.EndTime).ToString("hh:mm tt")
+                                        </div>
+                                        <div class="opacity-75 text-white">
+                                            Room: @schedule.RoomNo | Enrolled: @currentEnrolledCount / @schedule.Capacity
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        @if (isEnrolled)
+                                        {
+                                            <span class="badge bg-success bg-opacity-75 text-white rounded-pill px-3 py-2">Enrolled</span>
+                                        }
+                                        else if (isFull)
+                                        {
+                                            <span class="badge bg-danger bg-opacity-75 text-white rounded-pill px-3 py-2">FULL</span>
+                                        }
+                                        else
+                                        {
+                                            <form asp-controller="Enrollment" asp-action="Enroll" method="post" class="d-inline enroll-form">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="scheduleId" value="@schedule.Id" />
+                                                <button type="submit" class="btn btn-ios-primary btn-sm submit-btn">
+                                                    Select
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-white opacity-75 small fst-italic mb-0">No active schedule slots for this course.</p>
+                        }
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center py-5">
+                <div class="ios-glass-card p-5 text-white">
+                    <h5 class="text-white">⚠️ Course Schedule Not Found</h5>
+                    <p class="opacity-75 text-white mb-0">There are currently no course schedules available for enrollment.</p>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Prevent double form submissions on button click
+        document.querySelectorAll('.enroll-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const btn = this.querySelector('.submit-btn');
+                if (btn) {
+                    if (btn.disabled) {
+                        e.preventDefault();
+                        return;
+                    }
+                    btn.disabled = true;
+                        btn.innerText = 'Selecting...';
+                        }
+                    });
+                });
+    </script>
+}

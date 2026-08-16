@@ -1,0 +1,123 @@
+﻿@model Student_Portal_1._0.Models.ViewModels.ClassRoutineViewModel
+
+@{
+    ViewData["Title"] = "Class Routine";
+}
+
+<style>
+    /* Global text color override for the container to ensure ALL text is white */
+    .routine-container,
+    .routine-container * {
+        color: #ffffff !important;
+    }
+
+    .ios-glass-card {
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(25px) saturate(180%);
+        -webkit-backdrop-filter: blur(25px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 2rem;
+        box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+    }
+
+    .ios-glass-header {
+        background: rgba(255, 255, 255, 0.06);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 1.25rem 2rem;
+    }
+
+    .ios-day-header {
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffffff !important;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding: 0.75rem 1.25rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .ios-slot-card {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 1rem;
+        padding: 0.85rem 1.1rem;
+    }
+
+    .btn-outline-danger-custom {
+        color: #ffffff !important;
+        border-color: rgba(255, 255, 255, 0.4);
+        background: rgba(220, 53, 69, 0.3);
+    }
+
+        .btn-outline-danger-custom:hover {
+            background: rgba(220, 53, 69, 0.7);
+            border-color: #dc3545;
+        }
+</style>
+
+<div class="container my-5 routine-container">
+    <div class="ios-glass-card mb-4">
+        <div class="ios-glass-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <h3 class="fw-bold mb-0 text-white">Class Routine Timetable</h3>
+                <p class="text-white opacity-75 small mb-0">@Model.StudentName (@Model.StudentId) - @Model.Department</p>
+            </div>
+            <div class="d-flex gap-2 align-items-center">
+                <!-- Home Button -->
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-light rounded-pill px-4 btn-sm fw-bold d-inline-flex align-items-center justify-content-center">Home</a>
+
+                <!-- Edit Routine Button (Admin Only) -->
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-action="SelectCourses" class="btn btn-outline-light rounded-pill px-4 btn-sm fw-bold d-inline-flex align-items-center justify-content-center">Edit Routine</a>
+                }
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success rounded-4 bg-success bg-opacity-25 border-success text-white mb-4">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="row g-4">
+        @foreach (var day in Model.Timetable)
+        {
+            <div class="col-lg-6">
+                <div class="ios-glass-card h-100">
+                    <div class="ios-day-header">@day.Key</div>
+                    <div class="p-3">
+                        @if (day.Value.Any())
+                        {
+                            @foreach (var slot in day.Value)
+                            {
+                                <div class="ios-slot-card mb-2 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="text-white fw-bold">@slot.CourseCode - @slot.CourseTitle</div>
+                                        <div class="text-white opacity-75 small">@slot.TimeSlotFormatted</div>
+                                        <div class="text-white opacity-90 small">Room: @slot.RoomNo</div>
+                                    </div>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <form asp-action="AdminRemoveCourseFromRoutine" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="enrollmentId" value="@slot.EnrollmentId" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger-custom rounded-circle d-inline-flex align-items-center justify-content-center px-2 py-1" style="width: 28px; height: 28px;">✕</button>
+                                        </form>
+                                    }
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-white opacity-75 small mb-0 p-2">No classes scheduled on @day.Key.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

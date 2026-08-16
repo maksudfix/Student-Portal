@@ -1,0 +1,204 @@
+﻿@{
+    ViewData["Title"] = "Student Portal";
+
+    // Dynamic Display Name Resolution
+    string displayName = "User";
+    if (User.IsInRole("Admin"))
+    {
+        displayName = "Admin";
+    }
+    else if (!string.IsNullOrWhiteSpace(ViewBag.StudentName as string))
+    {
+        displayName = ViewBag.StudentName;
+    }
+    else if (!string.IsNullOrEmpty(User.Identity?.Name))
+    {
+        var rawName = User.Identity.Name;
+        displayName = rawName.Contains("@") ? rawName.Split('@')[0] : rawName;
+    }
+
+    // Determine target profile link based on role
+    bool isAdmin = User.IsInRole("Admin");
+}
+
+<style>
+    /* iOS Glassmorphism Card Style */
+    .ios-glass-card {
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(25px) saturate(180%);
+        -webkit-backdrop-filter: blur(25px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 1.5rem;
+        box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.15);
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+        .ios-glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.3);
+            border-color: rgba(56, 189, 248, 0.5);
+        }
+
+    .nav-card-link {
+        text-decoration: none;
+        color: #ffffff;
+        display: block;
+    }
+
+    .badge-role {
+        background: rgba(56, 189, 248, 0.2);
+        color: #ffffff;
+        border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+
+    .btn-logout {
+        transition: all 0.2s ease;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.8); /* Slight reddish accent on logout hover */
+            border-color: rgba(239, 68, 68, 1);
+            color: #ffffff !important;
+        }
+</style>
+
+<div class="container my-4 text-white">
+
+    <!-- Alert Notifications -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show ios-glass-card text-white mb-3 border-success" role="alert">
+            <strong class="text-white">Success!</strong> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show ios-glass-card text-white mb-3 border-danger" role="alert">
+            <strong class="text-white">Notice:</strong> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Header Welcome Banner -->
+    <div class="ios-glass-card p-3 p-md-4 mb-4 text-white">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <span class="badge badge-role rounded-pill px-3 py-1 mb-2 small text-white">
+                    @(isAdmin ? "System Administrator" : "Student")
+                </span>
+                <h3 class="fw-bold mb-0 text-white">
+                    Welcome back, @displayName
+                </h3>
+            </div>
+
+            <!-- Logout Button -->
+            <div>
+                <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-logout text-white rounded-pill px-4 py-2 small fw-semibold shadow-sm">
+                        Log Out
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Feature Grid -->
+    <div class="row g-3">
+
+        <!-- 1. Class Routine Box (Students Only) -->
+        @if (!isAdmin)
+        {
+            <div class="col-md-6 col-lg-4">
+                <a asp-controller="Enrollment" asp-action="MyRoutine" class="nav-card-link">
+                    <div class="ios-glass-card p-4 h-100 text-white">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge bg-info bg-opacity-25 text-white border border-info border-opacity-25 rounded-pill px-3">Timetable</span>
+                        </div>
+                        <h5 class="fw-bold mb-2 text-white">Class Routine</h5>
+                        <p class="opacity-75 small mb-0 text-white">View your weekly class schedules, class times, and room assignments.</p>
+                    </div>
+                </a>
+            </div>
+        }
+
+        <!-- 2. Exam Routine Box (All Users) -->
+        <div class="col-md-6 col-lg-4">
+            <a asp-controller="ExamRoutine" asp-action="Index" class="nav-card-link">
+                <div class="ios-glass-card p-4 h-100 text-white">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span class="badge bg-warning bg-opacity-25 text-white border border-warning border-opacity-25 rounded-pill px-3">Exams</span>
+                    </div>
+                    <h5 class="fw-bold mb-2 text-white">Exam Routine</h5>
+                    <p class="opacity-75 small mb-0 text-white">Check exam schedules, room seatings, and slot dates for enrolled subjects.</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- 3. Course Enrollment Box (Students Only) -->
+        @if (!isAdmin)
+        {
+            <div class="col-md-6 col-lg-4">
+                <a asp-controller="Enrollment" asp-action="SelectCourses" class="nav-card-link">
+                    <div class="ios-glass-card p-4 h-100 text-white">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge bg-success bg-opacity-25 text-white border border-success border-opacity-25 rounded-pill px-3">Enroll</span>
+                        </div>
+                        <h5 class="fw-bold mb-2 text-white">Course Enrollment</h5>
+                        <p class="opacity-75 small mb-0 text-white">Browse open department courses and select time slot schedules.</p>
+                    </div>
+                </a>
+            </div>
+        }
+
+        <!-- 4. Student Details / Profile / Directory Box -->
+        <div class="col-md-6 col-lg-4">
+            @if (isAdmin)
+            {
+                <!-- Admin routes to Student Management directory -->
+                <a asp-controller="Student" asp-action="Index" class="nav-card-link">
+                    <div class="ios-glass-card p-4 h-100 text-white">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge bg-light bg-opacity-25 text-white border border-light border-opacity-25 rounded-pill px-3">Directory</span>
+                        </div>
+                        <h5 class="fw-bold mb-2 text-white">Student Directory</h5>
+                        <p class="opacity-75 small mb-0 text-white">Browse all registered students, view detailed profiles, and update system records.</p>
+                    </div>
+                </a>
+            }
+            else
+            {
+                <!-- Student routes to their personal details page -->
+                <a asp-controller="Student" asp-action="Details" asp-route-id="@(ViewBag.StudentId ?? User.Identity?.Name)" class="nav-card-link">
+                    <div class="ios-glass-card p-4 h-100 text-white">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge bg-light bg-opacity-25 text-white border border-light border-opacity-25 rounded-pill px-3">Profile</span>
+                        </div>
+                        <h5 class="fw-bold mb-2 text-white">Student Details</h5>
+                        <p class="opacity-75 small mb-0 text-white">View student profile records, ID information, and registered department details.</p>
+                    </div>
+                </a>
+            }
+        </div>
+
+        <!-- 5. Admin Course Management Box (Admins Only) -->
+        @if (isAdmin)
+        {
+            <div class="col-md-6 col-lg-4">
+                <a asp-controller="Course" asp-action="Index" class="nav-card-link">
+                    <div class="ios-glass-card p-4 h-100 text-white border-primary border-opacity-50">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge bg-primary text-white rounded-pill px-3">Admin</span>
+                        </div>
+                        <h5 class="fw-bold mb-2 text-white">Manage Courses</h5>
+                        <p class="opacity-75 small mb-0 text-white">Create new courses, modify class slots, and manage system database master records.</p>
+                    </div>
+                </a>
+            </div>
+        }
+
+    </div>
+</div>

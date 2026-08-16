@@ -1,0 +1,123 @@
+﻿@model Student_Portal_1._0.Models.ViewModels.StudentClassRoutineViewModel
+
+@{
+    ViewData["Title"] = "Class Routine";
+}
+
+<style>
+    .ios-glass-card {
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(25px) saturate(180%);
+        -webkit-backdrop-filter: blur(25px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 2rem;
+        box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.15), inset 0 1px 1px 0 rgba(255, 255, 255, 0.3);
+        overflow: hidden;
+        color: #ffffff;
+    }
+
+    .ios-glass-header {
+        background: rgba(255, 255, 255, 0.06);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 1.25rem 2rem;
+    }
+
+    .ios-glass-table {
+        color: #ffffff !important;
+    }
+
+        .ios-glass-table th {
+            background: rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+
+        .ios-glass-table td {
+            color: #ffffff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+    .btn-ios-nav {
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 1rem;
+        padding: 0.5rem 1.25rem;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.25s ease;
+    }
+
+        .btn-ios-nav:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+</style>
+
+<div class="container my-5">
+    <div class="ios-glass-card">
+        <div class="ios-glass-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <h3 class="fw-bold mb-0">Class Routine - @Model.StudentName</h3>
+                <p class="small mb-0 opacity-75 mt-1">Student ID: @Model.StudentId | Dept: @Model.Department</p>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-action="Index" class="btn-ios-nav">
+                        <i class="bi bi-arrow-left me-1"></i> Back to Student List
+                    </a>
+                }
+                <a asp-controller="Home" asp-action="Index" class="btn-ios-nav">
+                    <i class="bi bi-house-door me-1"></i> Home
+                </a>
+            </div>
+        </div>
+
+        <div class="p-4 p-md-5">
+            @if (Model.RoutineItems != null && Model.RoutineItems.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table ios-glass-table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                                <th>Course Code</th>
+                                <th>Course Title</th>
+                                <th>Section</th>
+                                <th>Time</th>
+                                <th>Room</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.RoutineItems)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">@item.DayOfWeek</td>
+                                    <td>@item.CourseCode</td>
+                                    <td>@item.CourseTitle</td>
+                                    <td>
+                                        <span class="badge bg-info text-dark px-2 py-1 font-monospace" style="font-size: 0.75rem;">
+                                            @item.Section
+                                        </span>
+                                    </td>
+                                    <td>@DateTime.Today.Add(item.StartTime).ToString("hh:mm tt") - @DateTime.Today.Add(item.EndTime).ToString("hh:mm tt")</td>
+                                    <td>@item.RoomNo</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-calendar-x display-4 d-block mb-3 opacity-50"></i>
+                    <p class="lead mb-0">No classes scheduled for this student.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

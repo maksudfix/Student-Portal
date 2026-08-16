@@ -1,0 +1,182 @@
+﻿@model Student_Portal_1._0.Models.CourseSchedule
+
+@{
+    ViewData["Title"] = "Edit Schedule Slot";
+    var course = ViewBag.Course as Student_Portal_1._0.Models.Course;
+}
+
+<style>
+    /* Force ALL text inside the card to be white */
+    .ios-glass-card,
+    .ios-glass-card * {
+        color: #ffffff !important;
+    }
+
+    .ios-glass-card {
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(25px) saturate(180%);
+        -webkit-backdrop-filter: blur(25px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 2rem;
+        box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+    }
+
+    .ios-glass-header {
+        background: rgba(255, 255, 255, 0.06);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 1.25rem 2rem;
+    }
+
+    .ios-section-title {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: #ffffff !important;
+        font-weight: 700;
+        margin-bottom: 1.25rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .ios-glass-input, .ios-glass-select {
+        background: rgba(255, 255, 255, 0.08) !important;
+        border: 1px solid rgba(255, 255, 255, 0.18) !important;
+        color: #ffffff !important;
+        border-radius: 1rem !important;
+        padding: 0.85rem 1.1rem !important;
+    }
+
+        .ios-glass-input::placeholder {
+            color: rgba(255, 255, 255, 0.6) !important;
+        }
+
+        .ios-glass-select option {
+            background-color: #1e293b;
+            color: #ffffff !important;
+        }
+
+    .ios-glass-label {
+        font-weight: 500;
+        margin-bottom: 0.4rem;
+        color: #ffffff !important;
+        font-size: 0.875rem;
+    }
+
+    .btn-ios-primary, .btn-ios-secondary {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        line-height: 1 !important;
+        text-decoration: none;
+        transition: all 0.25s ease;
+    }
+
+    .btn-ios-primary {
+        background: linear-gradient(135deg, rgba(56, 189, 248, 0.85), rgba(37, 99, 235, 0.85));
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        font-weight: 600;
+        border-radius: 1rem;
+        padding: 0.85rem 1.5rem;
+    }
+
+        .btn-ios-primary:hover {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 1), rgba(37, 99, 235, 1));
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+        }
+
+    .btn-ios-secondary {
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 1rem;
+        padding: 0.85rem 1.5rem;
+    }
+
+        .btn-ios-secondary:hover {
+            background: rgba(255, 255, 255, 0.18);
+            color: #ffffff !important;
+        }
+</style>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="ios-glass-card">
+                <div class="ios-glass-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="fw-bold mb-0 text-white">Edit Schedule Slot</h3>
+                        <p class="text-white mb-0 small">
+                            Course: <strong class="text-white">@course?.CourseCode - @course?.Title</strong>
+                        </p>
+                    </div>
+                    <div class="d-flex gap-2 align-items-center">
+                        <a asp-controller="Home" asp-action="Index" class="btn-ios-secondary btn-sm px-3 rounded-pill"><i class="bi bi-house-door me-1"></i>Home</a>
+                    </div>
+                </div>
+
+                <div class="p-4 p-md-5">
+                    <form asp-action="EditSchedule" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="CourseId" />
+
+                        <div class="ios-section-title">Schedule & Capacity</div>
+                        <div class="row g-3 mb-4">
+                            <!-- Added Section Input Field -->
+                            <div class="col-md-12">
+                                <label asp-for="Section" class="ios-glass-label">Section</label>
+                                <input asp-for="Section" class="form-control ios-glass-input" placeholder="e.g. Section A" required />
+                                <span asp-validation-for="Section" class="text-white small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="DayOfWeek" class="ios-glass-label"></label>
+                                <select asp-for="DayOfWeek" asp-items="Html.GetEnumSelectList<DayOfWeek>()" class="form-select ios-glass-select">
+                                </select>
+                                <span asp-validation-for="DayOfWeek" class="text-white small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Capacity" class="ios-glass-label"></label>
+                                <input asp-for="Capacity" type="number" class="form-control ios-glass-input" />
+                                <span asp-validation-for="Capacity" class="text-white small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="StartTime" class="ios-glass-label"></label>
+                                <input asp-for="StartTime" type="time" class="form-control ios-glass-input" />
+                                <span asp-validation-for="StartTime" class="text-white small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="EndTime" class="ios-glass-label"></label>
+                                <input asp-for="EndTime" type="time" class="form-control ios-glass-input" />
+                                <span asp-validation-for="EndTime" class="text-white small"></span>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label asp-for="RoomNo" class="ios-glass-label"></label>
+                                <input asp-for="RoomNo" class="form-control ios-glass-input" placeholder="e.g. Lab 3" />
+                                <span asp-validation-for="RoomNo" class="text-white small"></span>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Action Buttons Centered -->
+                        <div class="d-flex justify-content-center align-items-center gap-3 pt-3 border-top border-white border-opacity-10">
+                            <a asp-action="Index" class="btn-ios-secondary">Cancel</a>
+                            <button type="submit" class="btn-ios-primary">
+                                <i class="bi bi-save me-1"></i>Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

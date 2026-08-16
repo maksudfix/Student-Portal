@@ -1,0 +1,201 @@
+﻿@model IEnumerable<Student_Portal_1._0.Models.CourseSchedule>
+
+@{
+    ViewData["Title"] = "Edit Student Routine";
+    var student = ViewBag.Student as Student_Portal_1._0.Models.StudentInfo;
+    var enrolledIds = ViewBag.EnrolledScheduleIds as List<int> ?? new List<int>();
+}
+
+<style>
+    /* Glassmorphism Styling & Global Text Colors */
+    .ios-glass-card,
+    .ios-glass-card * {
+        color: #ffffff !important;
+    }
+
+    .ios-glass-card {
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(25px) saturate(180%);
+        -webkit-backdrop-filter: blur(25px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 2rem;
+        box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.15), inset 0 1px 1px 0 rgba(255, 255, 255, 0.3);
+        overflow: hidden;
+    }
+
+    .ios-glass-header {
+        background: rgba(255, 255, 255, 0.06);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 1.5rem 2rem;
+    }
+
+    .ios-slot-card {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 1.25rem;
+        padding: 1rem 1.25rem;
+        transition: all 0.2s ease;
+        position: relative;
+    }
+
+        .ios-slot-card:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+    /* Form Checkbox Fix */
+    .form-check-input {
+        width: 1.35em;
+        height: 1.35em;
+        background-color: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        cursor: pointer;
+    }
+
+        .form-check-input:checked {
+            background-color: #38bdf8;
+            border-color: #38bdf8;
+        }
+
+    /* Buttons */
+    .btn-ios-primary {
+        background: linear-gradient(135deg, rgba(56, 189, 248, 0.9), rgba(37, 99, 235, 0.9));
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        border-radius: 1rem;
+        padding: 0.6rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.25s ease;
+    }
+
+        .btn-ios-primary:hover {
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+        }
+
+    .btn-ios-nav {
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 1rem;
+        padding: 0.5rem 1.25rem;
+        font-weight: 500;
+        transition: all 0.25s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .btn-ios-nav:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+    .btn-slot-edit {
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 0.5rem;
+        padding: 0.2rem 0.5rem;
+        font-size: 0.75rem;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+
+        .btn-slot-edit:hover {
+            background: rgba(56, 189, 248, 0.4);
+        }
+
+    h1, h2, h3, h4, h5, h6, p, span, div, label, a, button, i {
+        color: #ffffff !important;
+    }
+</style>
+
+<div class="container my-5">
+    <div class="ios-glass-card">
+        <form asp-action="EditStudentRoutine" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="studentInfoId" value="@(student?.Id ?? 0)" />
+
+            <!-- Header -->
+            <div class="ios-glass-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div>
+                    <h3 class="fw-bold mb-0">Edit Student Routine</h3>
+                    @if (student != null)
+                    {
+                        <p class="small mb-0 mt-1">
+                            Student Name: <strong>@student.Name</strong> | Student ID: <strong>@student.StudentId</strong> | Dept: <strong>@student.Department</strong>
+                        </p>
+                    }
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <a asp-controller="Course" asp-action="Index" class="btn-ios-nav">
+                        <i class="bi bi-journal-bookmark me-1"></i> Course Management
+                    </a>
+                    <a asp-controller="Home" asp-action="Index" class="btn-ios-nav">
+                        <i class="bi bi-house-door me-1"></i> Home
+                    </a>
+                </div>
+            </div>
+
+            <!-- Body Options -->
+            <div class="p-4 p-md-5">
+                <h5 class="fw-bold mb-4">Assign Available Course Slots:</h5>
+
+                <div class="row g-3">
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var slot in Model)
+                        {
+                            bool isChecked = enrolledIds.Contains(slot.Id);
+                            <div class="col-md-6 col-lg-4">
+                                <div class="ios-slot-card d-flex align-items-start justify-content-between gap-2 w-100">
+                                    <label class="d-flex align-items-start gap-3 flex-grow-1 cursor-pointer m-0">
+                                        <input type="checkbox" name="selectedScheduleIds" value="@slot.Id" class="form-check-input mt-1" @(isChecked ? "checked" : "") />
+                                        <div>
+                                            <div class="fw-bold">@slot.Course?.CourseCode - @slot.Course?.Title</div>
+                                            <div class="d-flex align-items-center gap-2 mt-1">
+                                                <span class="small opacity-75">@slot.DayOfWeek</span>
+                                                <span class="badge bg-info text-dark px-1.5 py-0.5 font-monospace" style="font-size: 0.7rem;">
+                                                    @slot.Section
+                                                </span>
+                                            </div>
+                                            <div class="small opacity-75 mt-1">
+                                                <i class="bi bi-clock me-1"></i>@(DateTime.Today.Add(slot.StartTime).ToString("hh:mm tt")) - @(DateTime.Today.Add(slot.EndTime).ToString("hh:mm tt"))
+                                                @if (!string.IsNullOrEmpty(slot.RoomNo))
+                                                {
+                                                    <span class="ms-1">| Room: @slot.RoomNo</span>
+                                                }
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <!-- Edit Slot Option -->
+                                    <a asp-controller="Course" asp-action="EditSchedule" asp-route-id="@slot.Id" class="btn-slot-edit text-nowrap" title="Edit Course Slot Details">
+                                        <i class="bi bi-pencil me-1"></i>Edit Slot
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="col-12">
+                            <div class="p-4 text-center rounded-4 border border-white border-opacity-10 bg-white bg-opacity-10">
+                                <p class="mb-2">No active course schedules available to assign.</p>
+                                <a asp-controller="Course" asp-action="Index" class="btn-ios-nav mt-2">
+                                    + Go to Course Management to Add Slots
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Footer Action Controls (Centered) -->
+                <div class="d-flex flex-wrap justify-content-center align-items-center gap-3 border-top border-white border-opacity-10 pt-4 mt-5">
+                    <a asp-action="Index" class="btn-ios-nav">Cancel</a>
+                    <button type="submit" class="btn-ios-primary">Save Student Routine</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,210 @@
+﻿@model Student_Portal_1._0.Models.ViewModels.StudentDashboardViewModel
+
+@{
+    ViewData["Title"] = "Student Profile";
+}
+
+<style>
+    /* iOS Glass Card */
+    .ios-glass-card {
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(25px) saturate(180%);
+        -webkit-backdrop-filter: blur(25px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 2rem;
+        box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.15), inset 0 1px 1px 0 rgba(255, 255, 255, 0.3);
+        overflow: hidden;
+    }
+
+    .ios-glass-header {
+        background: rgba(255, 255, 255, 0.06);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 1.25rem 2rem;
+    }
+
+    .ios-glass-badge {
+        background: rgba(56, 189, 248, 0.25);
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .ios-glass-field {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 1rem;
+        padding: 0.9rem 1.25rem;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+        .ios-glass-field:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+        }
+
+    .avatar-ios-glow {
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 25px rgba(56, 189, 248, 0.3);
+    }
+
+    .btn-ios-warning {
+        background: rgba(245, 158, 11, 0.2);
+        color: #fbbf24;
+        border: 1px solid rgba(245, 158, 11, 0.4);
+        backdrop-filter: blur(10px);
+        transition: all 0.25s ease;
+    }
+
+        .btn-ios-warning:hover {
+            background: rgba(245, 158, 11, 0.4);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+
+    .btn-ios-danger {
+        background: rgba(239, 68, 68, 0.2);
+        color: #fca5a5;
+        border: 1px solid rgba(239, 68, 68, 0.4);
+        backdrop-filter: blur(10px);
+        transition: all 0.25s ease;
+    }
+
+        .btn-ios-danger:hover {
+            background: rgba(239, 68, 68, 0.4);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+    .btn-ios-secondary {
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        font-weight: 500;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+        .btn-ios-secondary:hover {
+            background: rgba(255, 255, 255, 0.18);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+</style>
+
+<div class="container my-5">
+    <div class="ios-glass-card">
+
+        <!-- Header -->
+        <div class="ios-glass-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <h3 class="mb-0 fw-bold text-white" style="letter-spacing: -0.02em;">Student Dashboard</h3>
+
+            <div class="d-flex align-items-center gap-2">
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-controller="Student"
+                       asp-action="Edit"
+                       asp-route-id="@Model.StudentInfo?.Id"
+                       class="btn btn-ios-warning btn-sm px-3 rounded-pill">
+                        Edit Profile
+                    </a>
+
+                    <a asp-controller="Student"
+                       asp-action="Delete"
+                       asp-route-id="@Model.StudentInfo?.Id"
+                       class="btn btn-ios-danger btn-sm px-3 rounded-pill">
+                        Delete
+                    </a>
+
+                    <a asp-controller="Student"
+                       asp-action="Index"
+                       class="btn btn-ios-secondary btn-sm px-3 rounded-pill">
+                        Back to List
+                    </a>
+                }
+
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   class="btn btn-ios-secondary btn-sm px-3 rounded-pill">
+                    Home
+                </a>
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="card-body p-4 p-md-5">
+            <div class="row g-4 align-items-center">
+
+                <!-- Left Column -->
+                <div class="col-md-4 text-center border-end border-white border-opacity-10 pe-md-4">
+                    <div class="position-relative d-inline-block mb-3">
+                        <img src="@(string.IsNullOrEmpty(Model.StudentInfo?.Image) ? "/images/default-avatar.png" : Model.StudentInfo.Image)"
+                             alt="Student Photo"
+                             class="rounded-circle avatar-ios-glow"
+                             style="width: 160px; height: 160px; object-fit: cover;" />
+                    </div>
+                    <h4 class="fw-bold mb-1 text-white" style="letter-spacing: -0.01em;">@Model.StudentInfo?.Name</h4>
+                    <span class="badge ios-glass-badge rounded-pill px-3 py-2 mt-2">
+                        @Model.StudentInfo?.Department
+                    </span>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-md-8 ps-md-4">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <div class="ios-glass-field">
+                                <small class="text-uppercase text-white opacity-50 fw-semibold d-block mb-1" style="font-size: 0.75rem; letter-spacing: 0.05em;">Student ID</small>
+                                <span class="fw-medium text-white">@Model.StudentInfo?.StudentId</span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="ios-glass-field">
+                                <small class="text-uppercase text-white opacity-50 fw-semibold d-block mb-1" style="font-size: 0.75rem; letter-spacing: 0.05em;">Semester</small>
+                                <span class="fw-medium text-white">@Model.StudentInfo?.Semester</span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="ios-glass-field">
+                                <small class="text-uppercase text-white opacity-50 fw-semibold d-block mb-1" style="font-size: 0.75rem; letter-spacing: 0.05em;">Email</small>
+                                <span class="fw-medium text-white">@Model.StudentInfo?.Email</span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="ios-glass-field">
+                                <small class="text-uppercase text-white opacity-50 fw-semibold d-block mb-1" style="font-size: 0.75rem; letter-spacing: 0.05em;">Phone</small>
+                                <span class="fw-medium text-white">@Model.StudentInfo?.Phone</span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="ios-glass-field">
+                                <small class="text-uppercase text-white opacity-50 fw-semibold d-block mb-1" style="font-size: 0.75rem; letter-spacing: 0.05em;">Gender</small>
+                                <span class="fw-medium text-white">@Model.StudentInfo?.Gender</span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="ios-glass-field">
+                                <small class="text-uppercase text-white opacity-50 fw-semibold d-block mb-1" style="font-size: 0.75rem; letter-spacing: 0.05em;">Address</small>
+                                <span class="fw-medium text-white">@Model.StudentInfo?.Address</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
