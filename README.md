@@ -186,10 +186,3 @@ Student Portal was built to demonstrate practical experience with:
 ## Author
 Maksud Mubin (Trex Development)
 https://github.com/maksudfix
-
-
-## Author
-
-Maksud Mubin (Trex Development)
-
-GitHub: https://github.com/maksudfix
