@@ -61,13 +61,6 @@ A full-stack, responsive Student Portal built with ASP.NET Core MVC, Entity Fram
   * Custom CSS and JavaScript
   * Responsive layouts for different screen sizes
 
-## Architecture
-
-Student Portal follows the **Model-View-Controller (MVC)** architectural pattern.
-
-<!-- Add your architecture diagram here -->
-<img src="images/student-portal-architecture.png" alt="Student Portal Architecture" width="500">
-
 ### Architecture Overview
 
 **Controllers**
@@ -85,10 +78,6 @@ Handles authentication, authorization, roles, password management, and account-r
 **Razor Views**
 Provide the presentation layer using Razor, HTML, CSS, JavaScript, Bootstrap, and custom UI components.
 
-## Project Structure
-
-<!-- Add a screenshot of your Solution Explorer / folder structure here -->
-<img src="images/student-portal-structure.png" alt="Student Portal Structure" width="500">
 
 ## Prerequisites
 
@@ -190,10 +179,14 @@ Student Portal was built to demonstrate practical experience with:
   * Improve service-layer architecture
 
 * **Performance & Scale**
-  * Implement caching
   * Optimize database queries
   * Add pagination for large datasets
   * Improve search performance
+    
+## Author
+Maksud Mubin (Trex Development)
+https://github.com/maksudfix
+
 
 ## Author
 
